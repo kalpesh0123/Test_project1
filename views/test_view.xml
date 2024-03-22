@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_test_form" model="ir.ui.view">
+        <field name="name">test.model.tree</field>
+        <field name="model">test.model</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div>
+                        <h2>
+                            <field name="priority" widget="priority"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="desc"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_test_tree" model="ir.ui.view">
+        <field name="name">.tree</field>
+        <field name="model">test.model</field>
+        <field name="arch" type="xml">
+            <tree >
+                <field name="name"/>
+                <field name="date"/>
+                <field name="desc"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_test_search" model="ir.ui.view">
+        <field name="name">test.model.search</field>
+        <field name="model">test.model</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="date" filter_domain="[('date','&gt;=',self)]"/>
+                <filter name="last_week" string="Last Week"
+                        domain="[('date','&gt;=', context_today()-datetime.timedelta(days=7)),('date','&lt;',context_today())]"
+                        help="Tests of the last week"/>
+                <filter name="this_month" string="This Month"
+                        domain="[('date','&gt;=', context_today().replace(day=1))]" help="Tests of this month"/>
+                <filter name="this_year" string="This Year"
+                        domain="[('date','&gt;=', context_today().replace(month=1, day=1))]" help="Tests of this year"/>
+                <group expand="0" string="Group By">
+                    <filter name="date_week" string="Week" context="{'group_by':'date:week'}"/>
+                    <filter name="date_month" string="Month" context="{'group_by':'date:month'}"/>
+                    <filter name="date_year" string="Year" context="{'group_by':'date:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+
+    <record id="action_test_menu" model="ir.actions.act_window">
+        <field name="name">Test Menu</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">test.model</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_test_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Test !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_test2_model"
+              name="Test2"
+              parent="menu_test1_model"
+              action="action_test_menu"
+              sequence="10"/>
+</odoo>
